@@ -1,0 +1,129 @@
+openapi: 3.0.0
+info:
+  title: RestAPI - Sistema backend de aluguel de veículos
+  description: Api restful para administrar aluguel de veículos
+  version: 1.0.0
+paths:
+  /carros:
+    post:
+      summary: Adiciona um novo carro na tabela
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                model:
+                  type: string
+                  example: Modelo
+                color:
+                  type: string
+                  example: Cor
+                licensePlate:
+                  type: string
+                  example: Placa
+                rentPrice:
+                  type: integer
+                  example: 200
+                category:
+                  type: string
+                  example: Categoria
+              required:
+                - model
+                - color
+                - licensePlate
+                - rentPrice
+                - category
+      responses:
+        201:
+          description: Carro Adicionado
+    get:
+      summary: Retorna os carros em posse da empresa
+      responses:
+        200:
+          description: Requisição aceita.
+  /carros/{plate}:
+    get:
+      summary: Retorna o carro que possui a placa enviada
+      parameters:
+        - in: path
+          name: plate
+          required: true
+      responses:
+        200:
+          description: Requisição aceita. Objeto retornado com sucesso.
+    put:
+      summary: Atualiza os dados selecionados do veículo
+      parameters:
+        - in: path
+          name: plate
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                model:
+                  type: string
+                  example: Modelo
+                color:
+                  type: string
+                  example: Cor
+                licensePlate:
+                  type: string
+                  example: Placa
+                rentPrice:
+                  type: integer
+                  example: 200
+                category:
+                  type: string
+                  example: Categoria
+      responses:
+        202:
+          description: Objeto atualizado com sucesso.
+    delete:
+      summary: Deleta o carro pela placa enviada
+      parameters:
+        - in: path
+          name: plate
+          required: true
+      responses:
+        200:
+          description: Objeto deletado com sucesso.
+  /carros/alugar:
+    post:
+      summary: Aluga um carro, passando a sua placa, data de início e fim do aluguel
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                plate:
+                  type: string
+                  example: placa do carro a ser alugado
+                initialDate:
+                  type: date
+                  example: Data de aluguel
+                finalDate:
+                  type: date
+                  example: Data de devolução do veículo
+      responses:
+        203:
+          description: Carro alugado com sucesso.
+  /carros/disponiveis:
+    get:
+      summary: Retorna o registro de carros disponíveis para aluguel.
+      responses:
+        200:
+          description: Requisição aceita.
+  /carros/alugados:
+    get: 
+      summary: Retorna os carros alugados 
+      responses: 
+        200:
+          description: Requisição aceita.
