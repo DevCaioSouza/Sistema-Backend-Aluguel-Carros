@@ -14,7 +14,7 @@ class CarController {
       await Car.create(car)
       res.status(200).json('Carro adicionado.')
     } catch (error) {
-      console.log('Não foi possível completar a ação', +error)
+      console.log('Não foi possível completar a ação', error)
     }
   }
 
