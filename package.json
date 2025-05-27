@@ -14,6 +14,7 @@
   "dependencies": {
     "car-rent-system": "file:",
     "express": "^4.19.2",
+    "firebase": "^11.8.1",
     "nodemon": "^3.1.4",
     "pg": "^8.12.0",
     "sequelize": "^6.37.3",
