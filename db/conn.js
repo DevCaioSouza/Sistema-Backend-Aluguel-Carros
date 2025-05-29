@@ -8,7 +8,7 @@ const sequelize = new Sequelize('car-rent-system', 'postgres', 'postgres', {
 
 try {
   
-  sequelize.authenticate()
+  // sequelize.authenticate()
   console.log('Conectados ao postgres com sucesso')
 
 } catch (error) {
