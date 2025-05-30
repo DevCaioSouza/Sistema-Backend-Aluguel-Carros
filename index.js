@@ -5,18 +5,14 @@ import RecordController from './controllers/RecordController.js'
 import cors from 'cors'
 import pkg from 'pg'
 import dotenv from 'dotenv'
+import YAML from 'yamljs'
+import swaggerUi from 'swagger-ui-express'
 
 dotenv.config()
 
-import YAML from 'yamljs'
 const swaggerFile = YAML.load('./swagger.yaml')
-
-import swaggerUi from 'swagger-ui-express'
-
 const {Pool} = pkg
-
 const app = express()
-
 const { PGHOST, PGDATABASE, PGUSER, PGPASSWORD } = process.env
 
 const pool = new Pool({
@@ -29,15 +25,12 @@ const pool = new Pool({
 })
 
 app.use(cors())
-
 app.use(express.json())
-
 app.use(
   express.urlencoded({
     extended: true,
   })
 )
-
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 
 app.get("/", async (req, res) => {
@@ -66,10 +59,8 @@ conn
 app.post('/carros', CarController.createCar)
 app.post('/carros/alugar', RecordController.rentCar)
 app.get('/carros/alugados', RecordController.showRentedCars)
-
 app.get('/carros/disponiveis', RecordController.showAvailableCars)
 app.get('/carros', CarController.listAllCars)
 app.get('/carros/:plate', CarController.getCar)
 app.put('/carros/:plate', CarController.updateCar)
-
 app.delete('/carros/:plate', CarController.deleteCar)
