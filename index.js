@@ -2,14 +2,33 @@ import express from 'express'
 import conn from './db/conn.js'
 import CarController from './controllers/CarController.js'
 import RecordController from './controllers/RecordController.js'
+import cors from 'cors'
+import pkg from 'pg'
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 import YAML from 'yamljs'
 const swaggerFile = YAML.load('./swagger.yaml')
 
 import swaggerUi from 'swagger-ui-express'
 
+const {Pool} = pkg
 
 const app = express()
+
+const { PGHOST, PGDATABASE, PGUSER, PGPASSWORD } = process.env
+
+const pool = new Pool({
+  host: PGHOST,
+  database: PGDATABASE,
+  user: PGUSER,
+  password: PGPASSWORD,
+  port: 5432,
+  ssl: { rejectUnauthorized: false }
+})
+
+app.use(cors())
 
 app.use(express.json())
 
@@ -20,6 +39,22 @@ app.use(
 )
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile))
+
+app.get("/", async (req, res) => {
+  const client = await pool.connect()
+
+  try {
+    const result = await client.query("SELECT * FROM cars")
+
+    res.json(result.rows)
+  } catch (error) {
+    console.log(error)
+  } finally {
+    client.release()
+  }
+
+  res.status(404)
+})
 
 conn
   .sync()
