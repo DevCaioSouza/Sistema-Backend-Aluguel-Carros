@@ -11,7 +11,7 @@ import swaggerUi from 'swagger-ui-express'
 dotenv.config()
 
 const swaggerFile = YAML.load('./swagger.yaml')
-const {Pool} = pkg
+const { Pool } = pkg
 const app = express()
 const { PGHOST, PGDATABASE, PGUSER, PGPASSWORD } = process.env
 
@@ -21,7 +21,7 @@ const pool = new Pool({
   user: PGUSER,
   password: PGPASSWORD,
   port: 5432,
-  ssl: { rejectUnauthorized: false }
+  ssl: { rejectUnauthorized: false },
 })
 
 app.use(cors())
@@ -33,37 +33,63 @@ app.use(
 )
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 
-app.get("/carros", async (req, res) => {
+// pegar todos carros - NEON
+// app.get("/carros", async (req, res) => {
+//   const client = await pool.connect()
+
+//   try {
+//     const result = await client.query("SELECT * FROM cars")
+
+//     res.json(result.rows)
+//   } catch (error) {
+//     console.log(error)
+//   } finally {
+//     client.release()
+//   }
+//   res.status(404)
+// })
+
+// pegar carro por placa - NEON
+// app.get("/carros/:plate", async(req, res) => {
+//   const client = await pool.connect()
+
+//   try {
+//     const selectedPlate = req.params.plate
+
+//     // const result = await client.query("SELECT * FROM cars WHERE plate = ")
+//     const result = await client.query(`SELECT * FROM "cars" WHERE "cars"."licensePlate" = '${selectedPlate}'`)
+
+//     res.json(result.rows)
+//   } catch (error) {
+//     console.log(error)
+//   } finally {
+//     client.release()
+//   }
+//   res.status(404)
+// })
+
+// Postar um carro novo na tabela cars
+app.post('/carros', async (req, res) => {
   const client = await pool.connect()
 
-  try {
-    const result = await client.query("SELECT * FROM cars")
+  const car = {
+      model: req.body.model,
+      color: req.body.color,
+      licensePlate: req.body.licensePlate,
+      rentPrice: req.body.rentPrice,
+      category: req.body.category,
+    }
 
+  try {
+    const result = await client.query(
+      `INSERT INTO "cars" ("id","model","color","licensePlate","rentPrice","category","createdAt","updatedAt") VALUES (DEFAULT, '${car.model}', '${car.color}', '${car.licensePlate}', '${car.rentPrice}', '${car.category}', DEFAULT, DEFAULT) RETURNING "id","model","color","licensePlate","rentPrice","category","createdAt","updatedAt" `
+    )
     res.json(result.rows)
   } catch (error) {
     console.log(error)
   } finally {
     client.release()
   }
-  res.status(404)
-})
-
-app.get("/carros/:plate", async(req, res) => {
-  const client = await pool.connect()
-
-  try {
-    const selectedPlate = req.params.plate
-    
-    // const result = await client.query("SELECT * FROM cars WHERE plate = ")
-    const result = await client.query(`SELECT * FROM "cars" WHERE "cars"."licensePlate" = '${selectedPlate}'`)
-
-    res.json(result.rows)
-  } catch (error) {
-    console.log(error)
-  } finally {
-    client.release()
-  }
-  res.status(404)
 })
 
 conn
