@@ -33,7 +33,7 @@ app.use(
 )
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 
-app.get("/", async (req, res) => {
+app.get("/carros", async (req, res) => {
   const client = await pool.connect()
 
   try {
@@ -45,7 +45,24 @@ app.get("/", async (req, res) => {
   } finally {
     client.release()
   }
+  res.status(404)
+})
 
+app.get("/carros/:plate", async(req, res) => {
+  const client = await pool.connect()
+
+  try {
+    const selectedPlate = req.params.plate
+    
+    // const result = await client.query("SELECT * FROM cars WHERE plate = ")
+    const result = await client.query(`SELECT * FROM "cars" WHERE "cars"."licensePlate" = '${selectedPlate}'`)
+
+    res.json(result.rows)
+  } catch (error) {
+    console.log(error)
+  } finally {
+    client.release()
+  }
   res.status(404)
 })
 
