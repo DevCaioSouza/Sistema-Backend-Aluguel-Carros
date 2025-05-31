@@ -7,22 +7,12 @@ import pkg from 'pg'
 import dotenv from 'dotenv'
 import YAML from 'yamljs'
 import swaggerUi from 'swagger-ui-express'
+import CarControllerRemote from './controllers/CarControllerRemote.js'
 
 dotenv.config()
 
 const swaggerFile = YAML.load('./swagger.yaml')
-const { Pool } = pkg
 const app = express()
-const { PGHOST, PGDATABASE, PGUSER, PGPASSWORD } = process.env
-
-const pool = new Pool({
-  host: PGHOST,
-  database: PGDATABASE,
-  user: PGUSER,
-  password: PGPASSWORD,
-  port: 5432,
-  ssl: { rejectUnauthorized: false },
-})
 
 app.use(cors())
 app.use(express.json())
@@ -33,64 +23,11 @@ app.use(
 )
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 
-// pegar todos carros - NEON
-// app.get("/carros", async (req, res) => {
-//   const client = await pool.connect()
+// CONTROLLERS REMOTE DATABASE - NEON
 
-//   try {
-//     const result = await client.query("SELECT * FROM cars")
-
-//     res.json(result.rows)
-//   } catch (error) {
-//     console.log(error)
-//   } finally {
-//     client.release()
-//   }
-//   res.status(404)
-// })
-
-// pegar carro por placa - NEON
-// app.get("/carros/:plate", async(req, res) => {
-//   const client = await pool.connect()
-
-//   try {
-//     const selectedPlate = req.params.plate
-
-//     // const result = await client.query("SELECT * FROM cars WHERE plate = ")
-//     const result = await client.query(`SELECT * FROM "cars" WHERE "cars"."licensePlate" = '${selectedPlate}'`)
-
-//     res.json(result.rows)
-//   } catch (error) {
-//     console.log(error)
-//   } finally {
-//     client.release()
-//   }
-//   res.status(404)
-// })
-
-// Postar um carro novo na tabela cars
-app.post('/carros', async (req, res) => {
-  const client = await pool.connect()
-
-  const car = {
-      model: req.body.model,
-      color: req.body.color,
-      licensePlate: req.body.licensePlate,
-      rentPrice: req.body.rentPrice,
-      category: req.body.category,
-    }
-
-  try {
-    const result = await client.query(
-      `INSERT INTO "cars" ("id","model","color","licensePlate","rentPrice","category","createdAt","updatedAt") VALUES (DEFAULT, '${car.model}', '${car.color}', '${car.licensePlate}', '${car.rentPrice}', '${car.category}', DEFAULT, DEFAULT) RETURNING "id","model","color","licensePlate","rentPrice","category","createdAt","updatedAt" `
-    )
-    res.json(result.rows)
-  } catch (error) {
-    console.log(error)
-  } finally {
-    client.release()
-  }
-})
+app.get('/carros', CarControllerRemote.listAllCars)
+app.get('/carros/:plate', CarControllerRemote.getCar)
+app.post('/carros', CarControllerRemote.createCar)
 
 conn
   .sync()
@@ -99,11 +36,14 @@ conn
   })
   .catch((err) => console.log(err))
 
-app.post('/carros', CarController.createCar)
-app.post('/carros/alugar', RecordController.rentCar)
-app.get('/carros/alugados', RecordController.showRentedCars)
-app.get('/carros/disponiveis', RecordController.showAvailableCars)
-app.get('/carros', CarController.listAllCars)
-app.get('/carros/:plate', CarController.getCar)
-app.put('/carros/:plate', CarController.updateCar)
-app.delete('/carros/:plate', CarController.deleteCar)
+
+// CONTROLLERS DATABASE LOCAL - COMMENT REMOTE CALLS TO USE THEM
+
+// app.post('/carros', CarController.createCar)
+// app.post('/carros/alugar', RecordController.rentCar)
+// app.get('/carros/alugados', RecordController.showRentedCars)
+// app.get('/carros/disponiveis', RecordController.showAvailableCars)
+// app.get('/carros', CarController.listAllCars)
+// app.get('/carros/:plate', CarController.getCar)
+// app.put('/carros/:plate', CarController.updateCar)
+// app.delete('/carros/:plate', CarController.deleteCar)
