@@ -23,6 +23,10 @@ app.use(
 )
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 
+app.get("/", (req, res) => {
+  res.send("Hello! Car Rent System remote server is on.")
+})
+
 app.listen(3000, () => {
   console.log('Server listening at port 3000')
 })
