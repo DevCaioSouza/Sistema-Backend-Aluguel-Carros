@@ -23,18 +23,22 @@ app.use(
 )
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 
+app.listen(3000, () => {
+  console.log('Server listening at port 3000')
+})
+
 // CONTROLLERS REMOTE DATABASE - NEON
 
 app.get('/carros', CarControllerRemote.listAllCars)
 app.get('/carros/:plate', CarControllerRemote.getCar)
 app.post('/carros', CarControllerRemote.createCar)
 
-conn
-  .sync()
-  .then(() => {
-    app.listen(3000)
-  })
-  .catch((err) => console.log(err))
+// conn
+//   .sync()
+//   .then(() => {
+//     app.listen(3000)
+//   })
+//   .catch((err) => console.log(err))
 
 
 // CONTROLLERS DATABASE LOCAL - COMMENT REMOTE CALLS TO USE THEM
