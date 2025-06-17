@@ -5,13 +5,13 @@ dotenv.config()
 
 const { PGHOST, PGDATABASE, PGUSER, PGPASSWORD } = process.env
 
-// const sequelize = new Sequelize('car-rent-system', 'postgres', 'postgres', {
-//   host: 'localhost',
-//   dialect: 'postgres',
-//   port: 5432
-// })
+const sequelize = new Sequelize('car-rent-system', 'postgres', 'postgres', {
+  host: 'localhost',
+  dialect: 'postgres',
+  port: 5432
+})
 
-const sequelize = new Sequelize(`postgresql://${PGUSER}:${PGPASSWORD}@${PGHOST}/${PGDATABASE}?sslmode=require`)
+// const sequelize = new Sequelize(`postgresql://${PGUSER}:${PGPASSWORD}@${PGHOST}/${PGDATABASE}?sslmode=require`)
 
 try {
   

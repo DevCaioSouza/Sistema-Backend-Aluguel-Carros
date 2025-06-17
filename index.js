@@ -26,16 +26,6 @@ app.get("/", (req, res) => {
   res.send("Hello! Car Rent System remote server is on.")
 })
 
-
-// CONTROLLERS REMOTE DATABASE - NEON
-// app.listen(3000, () => {
-//   console.log('Server listening at port 3000')
-// })
-
-// app.get('/carros', CarControllerRemote.listAllCars)
-// app.get('/carros/:plate', CarControllerRemote.getCar)
-// app.post('/carros', CarControllerRemote.createCar)
-
 conn
   .sync()
   .then(() => {

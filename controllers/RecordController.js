@@ -12,10 +12,24 @@ class RecordController {
   }
 
   static async rentCar(req, res) {
+
+    //ideia: fixar as datas, dateNow para initial e datenow + 1 semana pra final
+
+    const currentDate = new Date()
+    const nextWeek = new Date(currentDate)
+
+    nextWeek.setDate(currentDate.getDate() + 7)
+
+    // const record = {
+    //   plate: req.body.plate,
+    //   initialDate: req.body.initialDate,
+    //   finalDate: req.body.finalDate,
+    // }
+
     const record = {
       plate: req.body.plate,
-      initialDate: req.body.initialDate,
-      finalDate: req.body.finalDate,
+      initialDate: currentDate,
+      finalDate: nextWeek,
     }
 
     const availableCar = await Car.findOne({
