@@ -1,13 +1,12 @@
 import express from 'express'
-// import conn from './db/conn.js'
-// import CarController from './controllers/CarController.js'
-// import RecordController from './controllers/RecordController.js'
+import conn from './db/conn.js'
+import CarController from './controllers/CarController.js'
+import RecordController from './controllers/RecordController.js'
 import cors from 'cors'
 import pkg from 'pg'
 import dotenv from 'dotenv'
 import YAML from 'yamljs'
 import swaggerUi from 'swagger-ui-express'
-import CarControllerRemote from './controllers/CarControllerRemote.js'
 
 dotenv.config()
 
@@ -27,31 +26,31 @@ app.get("/", (req, res) => {
   res.send("Hello! Car Rent System remote server is on.")
 })
 
-app.listen(3000, () => {
-  console.log('Server listening at port 3000')
-})
 
 // CONTROLLERS REMOTE DATABASE - NEON
+// app.listen(3000, () => {
+//   console.log('Server listening at port 3000')
+// })
 
-app.get('/carros', CarControllerRemote.listAllCars)
-app.get('/carros/:plate', CarControllerRemote.getCar)
-app.post('/carros', CarControllerRemote.createCar)
+// app.get('/carros', CarControllerRemote.listAllCars)
+// app.get('/carros/:plate', CarControllerRemote.getCar)
+// app.post('/carros', CarControllerRemote.createCar)
 
-// conn
-//   .sync()
-//   .then(() => {
-//     app.listen(3000)
-//   })
-//   .catch((err) => console.log(err))
+conn
+  .sync()
+  .then(() => {
+    app.listen(3000)
+  })
+  .catch((err) => console.log(err))
 
 
 // CONTROLLERS DATABASE LOCAL - COMMENT REMOTE CALLS TO USE THEM
 
-// app.post('/carros', CarController.createCar)
-// app.post('/carros/alugar', RecordController.rentCar)
-// app.get('/carros/alugados', RecordController.showRentedCars)
-// app.get('/carros/disponiveis', RecordController.showAvailableCars)
-// app.get('/carros', CarController.listAllCars)
-// app.get('/carros/:plate', CarController.getCar)
-// app.put('/carros/:plate', CarController.updateCar)
-// app.delete('/carros/:plate', CarController.deleteCar)
+app.post('/carros', CarController.createCar)
+app.post('/carros/alugar', RecordController.rentCar)
+app.get('/carros/alugados', RecordController.showRentedCars)
+app.get('/carros/disponiveis', RecordController.showAvailableCars)
+app.get('/carros', CarController.listAllCars)
+app.get('/carros/:plate', CarController.getCar)
+app.put('/carros/:plate', CarController.updateCar)
+app.delete('/carros/:plate', CarController.deleteCar)
