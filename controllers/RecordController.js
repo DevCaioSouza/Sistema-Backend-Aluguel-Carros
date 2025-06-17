@@ -7,7 +7,7 @@ class RecordController {
     const rentedCars = await Record.findAll()
     const rentedCarsObj = JSON.parse(JSON.stringify(rentedCars))
 
-    res.status(302).json(rentedCarsObj)
+    res.status(200).json(rentedCarsObj)
 
   }
 
@@ -65,7 +65,7 @@ class RecordController {
 
         await Record.create(record)
 
-        res.status(302).json(availableCar)
+        res.status(200).json(availableCar)
       } catch (error) {
         console.log('Opa, tivemos um erro', +error)
       }

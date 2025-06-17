@@ -23,7 +23,7 @@ class CarController {
 
     const carObj = JSON.parse(JSON.stringify(allCars))
 
-    res.status(302).json(carObj)
+    res.status(200).json(carObj)
   }
 
   static async getCar(req, res) {
